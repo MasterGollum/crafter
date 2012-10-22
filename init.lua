@@ -1,4 +1,5 @@
 crafter={
+  debug=false,
   crafts={}
 }
 
@@ -27,13 +28,17 @@ function crafter.get_craft_result(data)
       for i=1,w-c._h+1 do
         for j=1,w-c._w+1 do
           local p=(i-1)*w+j
-          --print("Checking data.items["..dump(i).."]["..dump(j).."]("..dump(p)..")="..dump(data.items[p]).." vs craft.recipe[1][1]="..dump(c.recipe[1][1]))
+          if crafter.debug then
+            print("Checking data.items["..dump(i).."]["..dump(j).."]("..dump(p)..")="..dump(data.items[p]).." vs craft.recipe[1][1]="..dump(c.recipe[1][1]))
+          end
           if data.items[p] == c.recipe[1][1] then
             for m=1,c._h do
               for n=1,c._w do
                 local q=(i+m-1-1)*w+j+n-1
-                --print("  Checking data.items["..dump(i+m-1).."]["..dump(j+n-1).."]("..dump(q)..")="..dump(data.items[q])..
-                --" vs craft.recipe["..dump(m).."]["..dump(n).."]="..dump(c.recipe[m][n]))
+                if crafter.debug then
+                  print("  Checking data.items["..dump(i+m-1).."]["..dump(j+n-1).."]("..dump(q)..")="..dump(data.items[q])..
+                  " vs craft.recipe["..dump(m).."]["..dump(n).."]="..dump(c.recipe[m][n]))
+                end
                 if c.recipe[m][n] ~= data.items[q] then
                   return nil
                 end
@@ -44,7 +49,9 @@ function crafter.get_craft_result(data)
             for m=i-c._h+1+1,w do
               for n=j+c._w,w do
                 local q=(m-1)*w+n
-                --print("  Checking right data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                if crafter.debug then
+                  print("  Checking right data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                end
                 if data.items[q] ~= "" then
                   return nil
                 end
@@ -54,26 +61,34 @@ function crafter.get_craft_result(data)
             for m=i-c._h+1+1+1,w do
               for n=1,j-1 do
                 local q=(m-1)*w+n
-                --print("  Checking left data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                if crafter.debug then
+                  print("  Checking left data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                end
                 if data.items[q] ~= "" then
                   return nil
                 end
               end
             end
             -- Checking at bottom of the matching square
-            for m=i+1,w do
+            for m=i+c._h,w do
               for n=j,j+c._w do
                 local q=(m-1)*w+n
-                --print("  Checking bottom data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                if crafter.debug then
+                  print("  Checking bottom data.items["..dump(m).."]["..dump(n).."]("..dump(q)..")="..dump(data.items[q]))
+                end
                 if data.items[q] ~= "" then
                   return nil
                 end
               end
             end
-            --print("Craft found! "..c.output)
-            return {item=c.output}
+            if crafter.debug then
+              print("Craft found! "..c.output)
+            end
+            return {item=ItemStack(c.output)}
           elseif data.items[p] ~= nil and data.items[p] ~= "" then
-            --print("Invalid data item "..data.items[p])
+            if crafter.debug then
+              print("Invalid data item "..data.items[p])
+            end
             return nil
           end
         end
