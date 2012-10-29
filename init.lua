@@ -22,9 +22,12 @@ function crafter.get_craft_result(data)
     w=data.width
   end
   local r=nil
-  for x,c in ipairs(crafter.crafts) do
-    r=crafter._check_craft(data,w,c)
+  for zz,craft in ipairs(crafter.crafts) do
+    r=crafter._check_craft(data,w,craft)
     if r ~= nil then
+        if crafter.debug then
+          print("Craft found, returning "..dump(r.item))
+        end
       return r
     end
   end
@@ -104,3 +107,4 @@ function crafter._check_craft(data,w,c)
     end
   end
 end
+
